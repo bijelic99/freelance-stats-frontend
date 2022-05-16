@@ -5,7 +5,9 @@ function MyApp({ Component, pageProps }) {
   return (
     <>
       <Navbar/>
-      <Component {...pageProps} />
+      <main className='mt-2 mx-2'>
+        <Component {...pageProps} />
+      </main>
     </>
   )
 }

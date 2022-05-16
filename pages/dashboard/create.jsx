@@ -1,4 +1,5 @@
 import Head from "next/head";
+import Dashboard from "../../components/Dashboard";
 
 export default function CreateDashboard() {
     return (
@@ -6,6 +7,9 @@ export default function CreateDashboard() {
             <Head>
                 <title>Create dashboard</title>
             </Head>
+            <div>
+                <Dashboard editMode />
+            </div>
         </>
     )
 }
