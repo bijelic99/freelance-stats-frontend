@@ -1,11 +1,29 @@
 const charts = [
     {
         id: "pie",
-        name: "Pie chart"
+        name: "Pie chart",
+        chartData: [
+            {
+                id: "workType",
+                name: "Work type"
+            },
+            {
+                id: "category",
+                name: "Category"
+            },
+            {
+                id: "language",
+                name: "Language"
+            },
+            {
+                id: "timezone",
+                name: "Timezone"
+            },
+        ]
     },
     {
         id: "bubble",
-        name: "Buuble chart"
+        name: "Bubble chart"
     },
     {
         id: "line",
