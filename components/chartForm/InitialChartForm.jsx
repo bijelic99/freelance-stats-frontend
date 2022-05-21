@@ -8,6 +8,8 @@ export default function InitialChartForm( { formSubmit }) {
     return (
         <>
             <form className="flex flex-col gap-1 px-2 py-2" onSubmit={handleSubmit(formSubmit)}>
+                <label htmlFor="name">Name: </label>
+                <input id="name" type="text" className="border p-1" {...register("name", { required: true })} />
                 <label htmlFor="dateFrom">Date from: </label>
                 <input id="dateFrom" type="datetime-local" className="border p-1" {...register("dateFrom", { required: true })} />
                 <label htmlFor="dateTo">Date to: </label>
