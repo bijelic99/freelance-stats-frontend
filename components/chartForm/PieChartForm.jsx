@@ -2,7 +2,7 @@ import { useMemo } from "react"
 import charts from "../../staticValues/charts";
 import { useForm } from "react-hook-form";
 
-export default function PieChartForm({ openPreviousPage, formSubmit }) {
+export default function PieChartForm({ goToInitialForm, formSubmit }) {
     
     const dataTypes = useMemo(
         () => charts.find(chart => chart.id === "pie")?.chartData || [],
@@ -21,7 +21,7 @@ export default function PieChartForm({ openPreviousPage, formSubmit }) {
                     }
                 </select>
                 <div className="flex flex-row justify-between">
-                    <button type="button" onClick={openPreviousPage}>Go back</button> 
+                    <button type="button" onClick={goToInitialForm}>Go back</button> 
                     <button type="submit">Add chart</button>
                 </div>
                 

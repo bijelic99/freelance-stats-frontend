@@ -1,46 +1,53 @@
-import { useReducer, useCallback, useState } from "react";
+import { useReducer, useCallback, useEffect } from "react";
 import InitialChartForm from "./InitialChartForm";
 import PieChartForm from "./PieChartForm";
 
 function chartReducerFunction(state, action) {
     switch (action.type) {
-        case 'SET_INITIAL_FORM_DATA':
-        case 'SET_CHART_SPECIFIC_DATA':
-            return { ...state, ...action.payload }
+        case 'INITIAL_FORM_SUBMIT':
+            return { isSubmited: false, currentForm: action.payload.chartType, chart: { ...state.chart,  ...action.payload } }
+        case 'GO_TO_INITIAL_FORM':
+            return { ...state, currentForm: 'initial' }
+        case 'CHART_SUBMIT':
+            return { ...state, isSubmited: true, chart: { ...state.chart, ...action.payload } }
         default:
             throw new Error(`Unsuported action '${action.type}'`)
     }
 }
 
 export default function ChartForm() {
-    const [chart, dispatch] = useReducer(chartReducerFunction, {})
+    const [chartForm, dispatch] = useReducer(chartReducerFunction, { isSubmited: false, currentForm: 'initial', chart: {}})
 
-    const [currentPage, setCurrentPage] = useState(null)
-
-    const openFirstPage = useCallback(
+    const goToInitialForm = useCallback(
         () => {
-            setCurrentPage(null)
-        }, [setCurrentPage]
-    )
-
-    const firstFormSubmit = useCallback(
-        payload => {
-            setCurrentPage(payload?.chartType)
-            dispatch({ type: 'SET_INITIAL_FORM_DATA', payload })
-        }, [setCurrentPage, dispatch]
-    )
-
-    const secondFormSubmit = useCallback(
-        payload => {
-            dispatch({ type: 'SET_CHART_SPECIFIC_DATA', payload })
-            console.log(payload)
+            dispatch({type: 'GO_TO_INITIAL_FORM'})
         }, [dispatch]
+    )
+
+    const initialFormSubmit = useCallback(
+        payload => {
+            dispatch({ type: 'INITIAL_FORM_SUBMIT', payload })
+        }, [dispatch]
+    )
+
+    const chartSubmit = useCallback(
+        payload => {
+            dispatch({ type: 'CHART_SUBMIT', payload })
+        }, [dispatch, chartForm]
+    )
+
+    useEffect(
+        () => {
+            if(chartForm.isSubmited) {
+                console.log(chartForm)
+            }
+        }, [chartForm.isSubmited]
     )
 
     return (
         <>
-            {!currentPage && <InitialChartForm formSubmit={firstFormSubmit} />}
-            {currentPage === 'pie' && <PieChartForm openPreviousPage={openFirstPage} formSubmit={secondFormSubmit} />}
+            {chartForm.currentForm == 'initial' && <InitialChartForm formSubmit={initialFormSubmit} />}
+            {chartForm.currentForm == 'pie' && <PieChartForm goToInitialForm={goToInitialForm} formSubmit={chartSubmit} />}
 
         </>
     )
