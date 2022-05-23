@@ -29,6 +29,7 @@ export default function ChartForm() {
     const initialFormSubmit = useCallback(
         payload => {
             dispatch({ type: 'INITIAL_FORM_SUBMIT', payload })
+            console.log(payload)
         }, [dispatch]
     )
 

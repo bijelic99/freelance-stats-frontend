@@ -21,8 +21,8 @@ const dbrd = {
             positionData: {
                 x: 0,
                 y: 0,
-                w: 2,
-                h: 2,
+                w: 1,
+                h: 1,
                 isResizable: false,
                 maxW: 4,
                 maxH: 4
@@ -33,7 +33,7 @@ const dbrd = {
             name: "Timezone pie chart",
             type: "pie",
             dateFrom: "2022-05-21T16:07",
-            dateTo: "2022-05-21T16:07",
+            dateTo: '',
             data: [
                 { name: 'GMT', value: 50 },
                 { name: 'GMT+1', value: 25 },
@@ -42,8 +42,8 @@ const dbrd = {
             positionData: {
                 x: 0,
                 y: 2,
-                w: 4,
-                h: 4,
+                w: 2,
+                h: 2,
                 isResizable: false,
                 maxW: 4,
                 maxH: 4
@@ -88,7 +88,7 @@ export default function Dashboard({ editMode }) {
                 )
             }
             <div className="border border-black rounded-md shadow-md" ref={dashboardRef}>
-                <GridLayout className="layout" cols={5} width={dashboardBounds.width} rowHeight={30}>
+                <GridLayout className="layout" cols={5} width={dashboardBounds.width}>
                     {
                         dashboard.charts.map(chartRender)
                     }
