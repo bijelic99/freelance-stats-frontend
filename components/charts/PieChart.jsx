@@ -16,7 +16,7 @@ export default function PieChart({ chart, editMode }) {
                 <span>To:</span><span>{chart.dateTo || 'now'}</span>
             </div>
             <div className="grow" ref={divRef}>
-                <ResponsiveContainer width={divBounds.width} height={divBounds.height}>
+                <ResponsiveContainer width={divBounds.width} height="100%">
                     <RCPieChart>
                         <Legend />
                         <Tooltip />

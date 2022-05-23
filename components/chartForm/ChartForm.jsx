@@ -1,58 +1,82 @@
-import { useReducer, useCallback, useEffect } from "react";
+import { useReducer, useCallback, useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
 import InitialChartForm from "./InitialChartForm";
-import PieChartForm from "./PieChartForm";
+import {PieChartForm} from "./PieChartForm";
+import charts from "../../staticValues/charts";
 
 function chartReducerFunction(state, action) {
     switch (action.type) {
-        case 'INITIAL_FORM_SUBMIT':
-            return { isSubmited: false, currentForm: action.payload.chartType, chart: { ...state.chart, ...action.payload } }
-        case 'GO_TO_INITIAL_FORM':
-            return { ...state, currentForm: 'initial' }
-        case 'CHART_SUBMIT':
-            return { ...state, isSubmited: true, chart: { ...state.chart, ...action.payload } }
+        case 'FORM_SUBMIT':
+            return { isSubmited: true, chart: { ...state.chart, ...action.payload } }
         case 'FORM_RESET':
-            return { isSubmited: false, currentForm: 'initial', chart: {} }
+            return { isSubmited: false, chart: {} }
         default:
             throw new Error(`Unsuported action '${action.type}'`)
     }
 }
 
 export default function ChartForm() {
-    const [chartForm, dispatch] = useReducer(chartReducerFunction, { isSubmited: false, currentForm: 'initial', chart: {} })
+    const [chartForm, dispatch] = useReducer(chartReducerFunction, { isSubmited: false, chart: {} })
 
-    const goToInitialForm = useCallback(
-        () => {
-            dispatch({ type: 'GO_TO_INITIAL_FORM' })
-        }, [dispatch]
-    )
+    const { register, handleSubmit, watch, unregister } = useForm();
 
-    const initialFormSubmit = useCallback(
+    const [lastChartType, setLastChartType] = useState(charts[0].id)
+
+    const formSubmit = useCallback(
         payload => {
-            dispatch({ type: 'INITIAL_FORM_SUBMIT', payload })
-            console.log(payload)
-        }, [dispatch]
-    )
-
-    const chartSubmit = useCallback(
-        payload => {
-            dispatch({ type: 'CHART_SUBMIT', payload })
+            dispatch({ type: 'FORM_SUBMIT', payload })
+            console.debug("Form submited")
         }, [dispatch, chartForm]
     )
 
     useEffect(
         () => {
             if (chartForm.isSubmited) {
-                console.log(chartForm)
                 dispatch({ type: 'FORM_RESET' })
+                console.debug("Submited form")
+                console.debug(chartForm)
             }
         }, [chartForm.isSubmited]
     )
 
+    const pieChartRef = useRef()
+
+    useEffect(() => {
+        const { unsubscribe } = watch((data, { name, type }) => {
+            if(name === 'chartType' && type === 'change' && data.chartType !== lastChartType) {
+                if(lastChartType === 'pie') pieChartRef.current.unregister()
+                setLastChartType(data.chartType)
+            }
+        })
+        return () => unsubscribe()
+    }, [watch, lastChartType, setLastChartType])
+
+    
+
     return (
         <>
-            {chartForm.currentForm == 'initial' && <InitialChartForm formSubmit={initialFormSubmit} />}
-            {chartForm.currentForm == 'pie' && <PieChartForm goToInitialForm={goToInitialForm} formSubmit={chartSubmit} />}
-
+            <form className="flex flex-col gap-1 px-2 py-2" onSubmit={handleSubmit(formSubmit)}>
+                <label htmlFor="name">Name: </label>
+                <input id="name" type="text" className="border p-1" {...register("name", { required: true })} />
+                <label htmlFor="dateFrom">Date from: </label>
+                <input id="dateFrom" type="datetime-local" className="border p-1" {...register("dateFrom", { required: true })} />
+                <label htmlFor="toNow">To now: </label>
+                <input id="toNow" type="checkbox" className="border p-1" {...register("toNow")} />
+                <label htmlFor="dateTo">Date to: </label>
+                <input id="dateTo" disabled={watch("toNow")} type="datetime-local" className="border p-1" {...register("dateTo", { required: !watch("toNow") })} />
+                <label htmlFor="width">Width: </label>
+                <input id="width" min={2} max={5} type="number" className="border p-1" {...register("width", { required: true })} />
+                <label htmlFor="height">Height: </label>
+                <input id="height" type="number" min={2} max={5} className="border p-1" {...register("height", { required: true })} />
+                <label htmlFor="chartType">Type:</label>
+                <select id="chartType" className="border p-1" {...register("chartType", { required: true })} >
+                    {
+                        charts.map(chart => <option key={chart.id} value={chart.id}>{chart.name}</option>)
+                    }
+                </select>
+                {watch("chartType") == 'pie' && <PieChartForm ref={pieChartRef} register={register} unregister={unregister} />}
+                <button type="submit">Add chart</button>
+            </form>
         </>
     )
 } 
