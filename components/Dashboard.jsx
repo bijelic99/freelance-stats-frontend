@@ -21,8 +21,8 @@ const dbrd = {
             positionData: {
                 x: 0,
                 y: 0,
-                w: 1,
-                h: 1,
+                w: 2,
+                h: 2,
                 isResizable: false,
                 maxW: 4,
                 maxH: 4
@@ -40,8 +40,8 @@ const dbrd = {
                 { name: 'GMT+2', value: 25 }
             ],
             positionData: {
-                x: 0,
-                y: 2,
+                x: 2,
+                y: 0,
                 w: 2,
                 h: 2,
                 isResizable: false,
@@ -52,8 +52,36 @@ const dbrd = {
     ]
 }
 
+const columns = 5
+
+function getXY(charts, newChartWidth) {
+    const maxY = Math.max(...(charts.map(c => c.positionData.y)), 0)
+    const lastRow = charts.filter(c => c.positionData.y === maxY)
+    const maxX = Math.max(...(lastRow.map(c=>c.positionData.x)), 0)
+    const maxXElem = lastRow.find(c => c.positionData.x === maxX)
+    if(maxXElem) {
+        const possibleX = maxX + maxXElem.positionData.w
+        if((possibleX + newChartWidth) <= columns) {
+            return {x: possibleX, y: maxY}
+        }
+    }
+    return {x: 0, y: maxY + 1}
+}
+
 function dashboardReducerFunction(state, action) {
     switch (action.type) {
+        case 'addChart':
+            const {x, y} = getXY(state.charts, action.payload.positionData.w)
+            console.log(x, y)
+            const chart = {
+                ...action.payload,
+                positionData: {
+                    ...action.payload.positionData,
+                    x: x,
+                    y: y
+                }
+            }
+            return { ...state, charts: [...state.charts, chart ] }
         default:
             throw new Error(`Unsuported action '${action.type}'`)
     }
@@ -66,9 +94,9 @@ export default function Dashboard({ editMode }) {
     const [dashboard, dispatch] = useReducer(dashboardReducerFunction, dbrd)
 
     const chartRender = useCallback(
-        (chart) => {
+        (chart, i) => {
             return (
-                <div key={chart.id} data-grid={chart.positionData}>
+                <div key={i} data-grid={chart.positionData}>
                     {
                         chart.type === 'pie' && <PieChart chart={chart} editMode={editMode} />
                     }
@@ -77,18 +105,42 @@ export default function Dashboard({ editMode }) {
         }, [editMode]
     )
 
+    const addChart = useCallback(
+        (chart) => {
+            dispatch({ type: 'addChart', payload: chart })
+        }
+    )
+
     return (
         <>
-
             {
-                editMode && (
-                    <div className="border border-black rounded-md shadow-md p-1 mb-2">
-                        <ChartForm />
+                !editMode && (
+                    <div className="border border-black rounded-md shadow-md p-1 px-4 mb-2 flex flex-row justify-between">
+                        <div className="m-1">
+                            <h2 className="p-1">{dashboard.name}</h2>
+                        </div>
                     </div>
                 )
             }
+            {
+                editMode && (
+                    <>
+                        <form className="border border-black rounded-md shadow-md p-1 px-4 mb-2 flex flex-row justify-between">
+                            <div className="m-1 flex">
+                                <input className="p-1" type='text' defaultValue={dashboard.name} />
+                            </div>
+                            <div className="flex flex-row gap-2">
+                                <button type="submit">Save changes</button>
+                            </div>
+                        </form>
+                        <div className="border border-black rounded-md shadow-md p-1 mb-2">
+                            <ChartForm addChart={addChart} />
+                        </div>
+                    </>
+                )
+            }
             <div className="border border-black rounded-md shadow-md" ref={dashboardRef}>
-                <GridLayout className="layout" cols={5} width={dashboardBounds.width}>
+                <GridLayout className="layout" cols={columns} width={dashboardBounds.width}>
                     {
                         dashboard.charts.map(chartRender)
                     }

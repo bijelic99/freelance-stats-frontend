@@ -4,10 +4,32 @@ import InitialChartForm from "./InitialChartForm";
 import {PieChartForm} from "./PieChartForm";
 import charts from "../../staticValues/charts";
 
+function chartFromForm(chartForm) {
+    switch (chartForm.chartType) {
+        case 'pie':
+            return {
+                name: chartForm.name,
+                type: chartForm.chartType,
+                dateFrom: chartForm.dateFrom,
+                dateTo: chartForm.toNow ? null : chartForm.dateTo,
+                data: [],
+                positionData: {
+                    w: Number.parseInt(chartForm.width),
+                    h: Number.parseInt(chartForm.height),
+                    isResizable: false,
+                    maxW: 4,
+                    maxH: 4
+                }
+            }
+        default:
+            throw new Error(`Unsupported chartType: ${chartForm.chartType}`)
+    }
+}
+
 function chartReducerFunction(state, action) {
     switch (action.type) {
         case 'FORM_SUBMIT':
-            return { isSubmited: true, chart: { ...state.chart, ...action.payload } }
+            return { isSubmited: true, chart: chartFromForm(action.payload) }
         case 'FORM_RESET':
             return { isSubmited: false, chart: {} }
         default:
@@ -15,10 +37,10 @@ function chartReducerFunction(state, action) {
     }
 }
 
-export default function ChartForm() {
+export default function ChartForm({ addChart }) {
     const [chartForm, dispatch] = useReducer(chartReducerFunction, { isSubmited: false, chart: {} })
 
-    const { register, handleSubmit, watch, unregister } = useForm();
+    const { register, handleSubmit, watch, unregister, reset } = useForm();
 
     const [lastChartType, setLastChartType] = useState(charts[0].id)
 
@@ -29,14 +51,19 @@ export default function ChartForm() {
         }, [dispatch, chartForm]
     )
 
+    const resetChart = useCallback(() => {
+        dispatch({ type: 'FORM_RESET' })
+        reset()
+    }, [dispatch, reset])
+
     useEffect(
         () => {
             if (chartForm.isSubmited) {
-                dispatch({ type: 'FORM_RESET' })
-                console.debug("Submited form")
+                addChart(chartForm.chart)
+                resetChart()
                 console.debug(chartForm)
             }
-        }, [chartForm.isSubmited]
+        }, [chartForm.isSubmited, resetChart]
     )
 
     const pieChartRef = useRef()
