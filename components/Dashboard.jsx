@@ -61,7 +61,7 @@ function getXY(charts, newChartWidth) {
     const maxXElem = lastRow.find(c => c.positionData.x === maxX)
     if(maxXElem) {
         const possibleX = maxX + maxXElem.positionData.w
-        if((possibleX + newChartWidth) <= columns) {
+        if((possibleX + newChartWidth) < columns) {
             return {x: possibleX, y: maxY}
         }
     }
