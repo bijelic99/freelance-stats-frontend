@@ -6,7 +6,7 @@ export default function Dashboard() {
     return (
         <>
             <Head>
-                <title>{ router.query.id }</title>
+                <title>{ router.query['dashboard-id'] }</title>
             </Head>
         </>
     )
