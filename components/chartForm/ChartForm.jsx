@@ -1,6 +1,5 @@
 import { useReducer, useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import InitialChartForm from "./InitialChartForm";
 import {PieChartForm} from "./PieChartForm";
 import charts from "../../staticValues/charts";
 
