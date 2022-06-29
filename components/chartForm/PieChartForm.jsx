@@ -1,27 +1,13 @@
-import { useMemo, useImperativeHandle, forwardRef } from "react"
-import charts from "../../staticValues/charts";
-
-export const PieChartForm = forwardRef(({ register, unregister }, ref) => {
-    const dataTypes = useMemo(
-        () => charts.find(chart => chart.id === "pie")?.chartData || [],
-        [charts]
-    )
-
-    useImperativeHandle(ref, () => ({
-        unregister: () => {
-            unregister("chartData")
-            console.debug("Unregistered from pie chart")
-        }
-    }), [unregister])
+export default function PieChartForm({ chartMetadata }) {
 
     return (
         <>
-            <label htmlFor="chartData">Choose data you want to show:</label>
-            <select id="chartData" className="border p-1" {...register("chartData", { required: true })} >
+            <label htmlFor="dataType">Choose data you want to show:</label>
+            <select id="dataType" name="dataType" className="border p-1" required>
                 {
-                    dataTypes.map(dataType => <option key={dataType.id} value={dataType.id}>{dataType.name}</option>)
+                    chartMetadata.dataTypes.map((tpe, i) => <option key={i} value={tpe}>{tpe}</option>)
                 }
             </select>
         </>
     )
-})
+}

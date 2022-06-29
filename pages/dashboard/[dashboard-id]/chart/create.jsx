@@ -1,10 +1,10 @@
-import ChartForm2 from "../../../../components/chartForm/ChartForm2";
+import ChartForm from "../../../../components/chartForm/ChartForm";
 import { fetchChartsMetadata, fetchSources } from "../../../../sharedFunctions/apiFetch";
 
 function ChartCreate({sources, chartsMetadata}) {
     return (
         <>
-            <ChartForm2 sources={sources} chartsMetadata={chartsMetadata} submitForm={null}></ChartForm2>
+            <ChartForm sources={sources} chartsMetadata={chartsMetadata} submitForm={null}></ChartForm>
         </>
     )
 }

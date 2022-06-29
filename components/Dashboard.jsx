@@ -1,4 +1,3 @@
-import ChartForm from "./chartForm/ChartForm";
 import PieChart from "./charts/PieChart";
 import { useState, useCallback, useReducer } from 'react'
 import GridLayout from "react-grid-layout";
@@ -133,9 +132,6 @@ export default function Dashboard({ editMode }) {
                                 <button type="submit">Save changes</button>
                             </div>
                         </form>
-                        <div className="border border-black rounded-md shadow-md p-1 mb-2">
-                            <ChartForm addChart={addChart} />
-                        </div>
                     </>
                 )
             }
