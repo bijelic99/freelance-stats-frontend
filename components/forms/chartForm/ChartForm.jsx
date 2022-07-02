@@ -59,7 +59,7 @@ export default function ChartForm({ chartsMetadata, sources, submitForm, chart =
                 {
                     selectedType === "model.PieChart" && <PieChartForm chartMetadata={selectedChart}/>
                 }
-                <button type="submit">Add chart</button>
+                <button type="submit">Create dashboard</button>
             </form>
         </>
     )

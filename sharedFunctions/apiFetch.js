@@ -1,5 +1,5 @@
 export async function fetchSources() {
-    const request = await fetch(`${process.env.API_URL}/api/v1/sources`)
+    const request = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/sources`)
     if(request.status === 200 ){
         return await request.json()
     } else {
@@ -10,7 +10,7 @@ export async function fetchSources() {
 }
 
 export async function fetchChartsMetadata() {
-    const request = await fetch(`${process.env.API_URL}/api/v1/charts-metadata`)
+    const request = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/charts-metadata`)
     if(request.status === 200 ){
         return await request.json()
     } else {
