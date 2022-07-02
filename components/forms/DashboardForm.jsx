@@ -46,7 +46,7 @@ export default function DashboardForm({ submitForm, currentUserId, dashboard = n
                 <input id="name" name="name" type="text" className="border p-1" defaultValue={dashboard.name} required/>
                 <label htmlFor="public">Name: </label>
                 <input id="public" name="public" type="checkbox" className="border p-1" checked={dashboard.public}/>
-                <button type="submit" disabled={useState}>{submitButtonText}</button>
+                <button type="submit" disabled={submited}>{submitButtonText}</button>
             </form>
         </>
     )
