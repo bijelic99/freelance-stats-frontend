@@ -3,12 +3,20 @@ import PieChartForm from "./PieChartForm"
 
 const newChart = {
     name: "",
-    dateFrom: null,
-    dateTo: null,
-    source: null
+    dateFrom: "",
+    dateTo: "",
+    source: null,
+    visualizationData: {
+        x: 0,
+        y: 0,
+        w: 0,
+        h: 0
+    }
 }
 
-export default function ChartForm({ chartsMetadata, sources, submitForm, chart = newChart }) {
+export default function ChartForm({ chartsMetadata, sources, submitForm, chart = newChart, submitButtonText = "Create chart" }) {
+
+    const [submited, setSubmited] = useState(false)
 
     const [selectedType, setSelectedType ] = useState(Object.entries(chartsMetadata)[0][1]?.class)
 
@@ -22,12 +30,34 @@ export default function ChartForm({ chartsMetadata, sources, submitForm, chart =
     }, [selectedType, chartsMetadata])
 
     const transformInput = useCallback(
-        (e) => {
+        async (e) => {
+            setSubmited(true)
             e.preventDefault()
-            console.log(e.target)
             const formData = new FormData(e.target)
-            console.log(Object.fromEntries(formData.entries()))
-        }, [submitForm]
+            const {width, height, source, dateFrom, dateTo, ...formObject} = Object.fromEntries(formData.entries())
+            const transformedInput = {
+                id: "",
+                ...chart,
+                ...formObject,
+                source: source === 'all' ? null : source,
+                dateFrom: dateFrom || null,
+                dateTo: dateTo || null,
+                visualizationData: {
+                    ...chart.visualizationData,
+                    w: Number.parseInt(width),
+                    h: Number.parseInt(height)
+                },
+                
+            }
+            console.debug(transformedInput)
+            submitForm(transformedInput)
+            .then(() => {
+                e.target.reset()
+            })
+            .catch(() => {
+                setSubmited(false)
+            })
+        }, [submitForm, setSubmited]
     )
 
     return (
@@ -41,7 +71,7 @@ export default function ChartForm({ chartsMetadata, sources, submitForm, chart =
                 <input id="dateTo" name="dateTo" type="datetime-local" className="border p-1" defaultValue={chart.dateTo}/>
                 <label htmlFor="source">Source: </label>
                 <select id="source" name="source" className="border p-1" defaultValue={chart.source} required>
-                    <option key={'all'} value={''}>All</option>
+                    <option key={'all'} value={'all'}>All</option>
                     {
                         sources.map(source => <option key={source.id} value={source.id}>{source.name}</option>)
                     }
@@ -59,7 +89,7 @@ export default function ChartForm({ chartsMetadata, sources, submitForm, chart =
                 {
                     selectedType === "model.PieChart" && <PieChartForm chartMetadata={selectedChart}/>
                 }
-                <button type="submit">Create dashboard</button>
+                <button type="submit" disabled={submited}>{submitButtonText}</button>
             </form>
         </>
     )
