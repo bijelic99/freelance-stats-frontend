@@ -44,8 +44,8 @@ export default function DashboardForm({ submitForm, currentUserId, dashboard = n
             <form className="flex flex-col gap-1 px-2 py-2" onSubmit={transformInput}>
                 <label htmlFor="name">Name: </label>
                 <input id="name" name="name" type="text" className="border p-1" defaultValue={dashboard.name} required/>
-                <label htmlFor="public">Name: </label>
-                <input id="public" name="public" type="checkbox" className="border p-1" checked={dashboard.public}/>
+                <label htmlFor="public">Is dashboard public: </label>
+                <input id="public" name="public" type="checkbox" className="border p-1"/>
                 <button type="submit" disabled={submited}>{submitButtonText}</button>
             </form>
         </>

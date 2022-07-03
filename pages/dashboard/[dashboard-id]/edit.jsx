@@ -41,7 +41,7 @@ export default function EditDashboard() {
     }, [router, setDashboard, setLoading, setError])    
 
     const submitForm = useCallback(async (submitedDashboard) => {
-        const response = fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/dashboard/${submitedDashboard.id}`, {
+        const response = fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/dashboard`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
