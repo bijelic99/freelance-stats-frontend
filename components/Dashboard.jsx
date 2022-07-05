@@ -79,7 +79,7 @@ export default function Dashboard({ dashboard }) {
                     {
                         dashboard.charts.map((chart, i) => (
                             <div key={i} data-grid={chart.visualizationData}>
-                                <Chart isLoading={isLoading} chart={chart} chartData={dashboardData[chart.id]} />
+                                <Chart dashboardId={router.query['dashboard-id']} isLoading={isLoading} chart={chart} chartData={dashboardData[chart.id]} />
                             </div>
                         ))
                     }
