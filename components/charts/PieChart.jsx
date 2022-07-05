@@ -31,7 +31,7 @@ export function PieChartInfo({ chart }) {
         <>
             <div className="flex flex-row justify-between"><span>Chart type:</span><span>Pie chart</span></div>
             <div className="flex flex-row justify-between"><span>Data type:</span><span>{chart.dataType}</span></div>
-            <div className="flex flex-row justify-between"><span>Source:</span><span>{chart?.source ? chart.soure : "All"}</span></div>
+            <div className="flex flex-row justify-between"><span>Source:</span><span>{chart?.source ? chart.source : "All"}</span></div>
             { chart?.dateFrom && <><span>From:</span><span>{chart.dateFrom}</span></> }
             { chart?.dateTo && <><span>To:</span><span>{chart.dateTo}</span></> }
         </>
