@@ -14,7 +14,7 @@ const newChart = {
     }
 }
 
-export default function ChartForm({ chartsMetadata, sources, submitForm, chart = newChart, submitButtonText = "Create chart" }) {
+export default function ChartForm({ chartsMetadata, sources, submitForm, chart = newChart, submitButtonText = "Create chart", edit = false }) {
 
     const [submited, setSubmited] = useState(false)
 
@@ -77,17 +77,17 @@ export default function ChartForm({ chartsMetadata, sources, submitForm, chart =
                     }
                 </select>
                 <label htmlFor="width">Width: </label>
-                <input id="width" name="width" type="number" className="border p-1" min={selectedChart.visualizationLimits.minW} max={selectedChart.visualizationLimits.maxW} required/>
+                <input id="width" name="width" type="number" className="border p-1" min={selectedChart.visualizationLimits.minW} max={selectedChart.visualizationLimits.maxW} required defaultValue={chart?.visualizationData.w || null}/>
                 <label htmlFor="height">Height: </label>
-                <input id="height" name="height" type="number" className="border p-1" min={selectedChart.visualizationLimits.minH} max={selectedChart.visualizationLimits.maxH} required/>
+                <input id="height" name="height" type="number" className="border p-1" min={selectedChart.visualizationLimits.minH} max={selectedChart.visualizationLimits.maxH} required defaultValue={chart?.visualizationData.h || null}/>
                 <label htmlFor="_type">Chart: </label>
-                <select onChange={_typeOnChange} id="_type" name="_type" className="border p-1" required>
+                <select onChange={_typeOnChange} id="_type" name="_type" className="border p-1" required disabled={edit} defaultValue={chart?._type || null}>
                     {
                         Object.entries(chartsMetadata).map(([id, cm]) => <option key={id} value={cm.class}>{cm.name}</option>)
                     }
                 </select>
                 {
-                    selectedType === "model.PieChart" && <PieChartForm chartMetadata={selectedChart}/>
+                    selectedType === "model.PieChart" && <PieChartForm chartMetadata={selectedChart} chart={chart}/>
                 }
                 <button type="submit" disabled={submited}>{submitButtonText}</button>
             </form>

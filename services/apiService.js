@@ -73,6 +73,18 @@ export async function getChartData(dashboardId) {
         })
 }
 
+export async function getChart(dashboardId, chartId) {
+    return fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/dashboard/${dashboardId}/charts/${chartId}`)
+        .then(res => {
+            if (res.status === 200) {
+                return res.json()
+            }
+            else {
+                throw new Exception(`Server returned non 200 response: '${res.status}'`)
+            }
+        })
+}
+
 export async function addChart(dashboardId, chart) {
     return fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/dashboard/${dashboardId}/charts`, {
         method: 'POST',
