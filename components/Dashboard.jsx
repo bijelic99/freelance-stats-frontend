@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { cssOverride } from "../staticValues/loader-config";
 import Chart from "./charts/Chart";
+import { getChartData } from "../services/apiService";
 
 const columns = 5
 
@@ -20,15 +21,7 @@ export default function Dashboard({ dashboard }) {
         const dashboardId = router.query['dashboard-id']
         if (dashboardId) {
             setLoading(true)
-            fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/dashboard/${dashboardId}/chart-data`)
-                .then(res => {
-                    if (res.status === 200) {
-                        return res.json()
-                    }
-                    else {
-                        throw new Exception(`Server returned non 200 response: '${res.status}'`)
-                    }
-                })
+            getChartData(dashboardId)
                 .then((data) => {
                     setDashboardData(data)
                     setLoading(false)

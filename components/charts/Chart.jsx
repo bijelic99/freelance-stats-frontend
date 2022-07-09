@@ -50,8 +50,8 @@ export default function Chart({ dashboardId, chart, chartData, isLoading }) {
                 }
                 {
                     showModify && <div className="grow flex flex-col items-center justify-center" onMouseLeave={modifyMouseLeave}>
-                        <Link href={`/dashboard/${dashboardId}/charts/${chart.id}/edit`}>Edit</Link>
-                        <Link href={`/dashboard/${dashboardId}/charts/${chart.id}/delete`}>Delete</Link>
+                        <Link href={`/dashboard/${dashboardId}/chart/${chart.id}/edit`}>Edit</Link>
+                        <Link href={`/dashboard/${dashboardId}/chart/${chart.id}/delete`}>Delete</Link>
                     </div>
                 }
             </div>

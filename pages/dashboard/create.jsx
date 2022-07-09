@@ -3,25 +3,16 @@ import { useCallback } from "react";
 import DashboardForm from "../../components/forms/DashboardForm";
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router'
+import { createDashboard } from "../../services/apiService";
 
 export default function CreateDashboard() {
     const currentUserId = ""
     const router = useRouter()
 
     const submitForm = useCallback(async (dashboard) => {
-        const response = fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/dashboard`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(dashboard)
-        })
-        .then(async res => {
-            if(res.status !== 201) throw new Exception(`Server returned non 201 response: '${res.status}'`)
-            const dashboard = await res.json()
-            router.push(`/dashboard/${dashboard.id}`)
-            return dashboard
-        })
+        const response = createDashboard(dashboard)
+        
+        response.then(() => router.push(`/dashboard/${dashboard.id}`))
 
         toast.promise(
             response,

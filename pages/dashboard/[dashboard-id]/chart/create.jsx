@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { useCallback } from "react";
 import ChartForm from "../../../../components/forms/chartForm/ChartForm";
-import { fetchChartsMetadata, fetchSources } from "../../../../sharedFunctions/apiFetch";
+import { addChart, fetchChartsMetadata, fetchSources } from "../../../../services/apiService";
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router'
 
@@ -12,18 +12,10 @@ function ChartCreate({sources, chartsMetadata}) {
     const submitForm = useCallback(async (chart) => {
         const dashboardId = router.query['dashboard-id']
         if(dashboardId) {
-            const response = fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/dashboard/${dashboardId}/charts`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(chart)
-            })
-            .then(async res => {
-                if(res.status !== 201) throw new Exception(`Server returned non 201 response: '${res.status}'`)
-                const chart = await res.json()
+            const response = addChart(dashboardId, chart)
+            
+            response.then(async chart => {
                 router.push(`/dashboard/${dashboardId}`)
-                return chart
             })
 
             toast.promise(
