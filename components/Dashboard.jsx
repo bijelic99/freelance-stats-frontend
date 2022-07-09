@@ -78,7 +78,7 @@ export default function Dashboard({ dashboard }) {
                 <GridLayout className="layout" cols={columns} width={dashboardBounds.width}>
                     {
                         dashboard.charts.map((chart, i) => (
-                            <div key={i} data-grid={chart.visualizationData}>
+                            <div key={i} data-grid={{...chart.visualizationData, isResizable: false}}>
                                 <Chart dashboardId={router.query['dashboard-id']} isLoading={isLoading} chart={chart} chartData={dashboardData[chart.id]} />
                             </div>
                         ))
