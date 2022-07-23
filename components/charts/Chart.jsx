@@ -1,6 +1,7 @@
 import ClipLoader from "react-spinners/ClipLoader";
 import { cssOverride } from "../../staticValues/loader-config";
 import { PieChart, PieChartInfo } from "./PieChart";
+import { BubbleChart, BubbleChartInfo } from "./BubbleChart";
 import ChartHeading from "./ChartHeading";
 import { useCallback, useState } from "react";
 import Link from 'next/link'
@@ -39,12 +40,18 @@ export default function Chart({ dashboardId, chart, chartData, isLoading }) {
                         {
                             chart._type === "model.PieChart" && <PieChart chart={chart} chartData={chartData} />
                         }
+                        {
+                            chart._type === "model.BubbleChart" && <BubbleChart chart={chart} chartData={chartData} />
+                        }
                     </>
                 }
                 {
                     showInfo && <div className="grow flex flex-col justify-center px-8" onMouseLeave={modifyMouseLeave}>
                         {
                             chart._type === "model.PieChart" && <PieChartInfo chart={chart} />
+                        }
+                        {
+                            chart._type === "model.BubbleChart" && <BubbleChartInfo chart={chart} />
                         }
                     </div>
                 }

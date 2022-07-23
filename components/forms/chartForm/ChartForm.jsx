@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from "react"
+import BubbleChartForm from "./BubbleChartForm"
 import PieChartForm from "./PieChartForm"
 
 const newChart = {
@@ -18,7 +19,7 @@ export default function ChartForm({ chartsMetadata, sources, submitForm, chart =
 
     const [submited, setSubmited] = useState(false)
 
-    const [selectedType, setSelectedType ] = useState(Object.entries(chartsMetadata)[0][1]?.class)
+    const [selectedType, setSelectedType ] = useState(edit ? chart._type : Object.entries(chartsMetadata)[0][1]?.class)
 
     const _typeOnChange = useCallback((e) => {
         e.preventDefault()
@@ -88,6 +89,9 @@ export default function ChartForm({ chartsMetadata, sources, submitForm, chart =
                 </select>
                 {
                     selectedType === "model.PieChart" && <PieChartForm chartMetadata={selectedChart} chart={chart}/>
+                }
+                {
+                    selectedType === "model.BubbleChart" && <BubbleChartForm chartMetadata={selectedChart} chart={chart}/>
                 }
                 <button type="submit" disabled={submited}>{submitButtonText}</button>
             </form>
