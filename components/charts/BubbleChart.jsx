@@ -58,7 +58,7 @@ export function BubbleChart({ chart, chartData }) {
                 >
                     <XAxis
                         type="category"
-                        dataKey="name"
+                        dataKey="key"
                         interval={0}
                         tickLine={{ transform: 'translate(0, -6)' }}
                     />

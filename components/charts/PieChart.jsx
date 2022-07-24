@@ -13,7 +13,7 @@ export function PieChart({ chart, chartData }) {
                 <RCPieChart>
                     { chartData.data.length <= 5 && <Legend /> }
                     <Tooltip />
-                    <Pie fill="#8884d8" data={chartData.data} dataKey="value" nameKey="name">
+                    <Pie fill="#8884d8" data={chartData.data} dataKey="value" nameKey="key">
                         {
                             chartData.data.map((entry, index) => (
                                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
