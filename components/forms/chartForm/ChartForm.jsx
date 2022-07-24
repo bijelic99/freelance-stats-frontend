@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react"
 import BubbleChartForm from "./BubbleChartForm"
+import LineChartForm from "./LineChartForm"
 import PieChartForm from "./PieChartForm"
 
 const newChart = {
@@ -92,6 +93,9 @@ export default function ChartForm({ chartsMetadata, sources, submitForm, chart =
                 }
                 {
                     selectedType === "model.BubbleChart" && <BubbleChartForm chartMetadata={selectedChart} chart={chart}/>
+                }
+                {
+                    selectedType === "model.LineChart" && <LineChartForm chartMetadata={selectedChart} chart={chart}/>
                 }
                 <button type="submit" disabled={submited}>{submitButtonText}</button>
             </form>

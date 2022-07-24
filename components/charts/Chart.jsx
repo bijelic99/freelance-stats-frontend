@@ -5,6 +5,7 @@ import { BubbleChart, BubbleChartInfo } from "./BubbleChart";
 import ChartHeading from "./ChartHeading";
 import { useCallback, useState } from "react";
 import Link from 'next/link'
+import { LineChart, LineChartInfo } from "./LineChart";
 
 export default function Chart({ dashboardId, chart, chartData, isLoading }) {
     const [showInfo, setShowInfo] = useState(false)
@@ -43,6 +44,9 @@ export default function Chart({ dashboardId, chart, chartData, isLoading }) {
                         {
                             chart._type === "model.BubbleChart" && <BubbleChart chart={chart} chartData={chartData} />
                         }
+                        {
+                            chart._type === "model.LineChart" && <LineChart chart={chart} chartData={chartData} />
+                        }
                     </>
                 }
                 {
@@ -52,6 +56,9 @@ export default function Chart({ dashboardId, chart, chartData, isLoading }) {
                         }
                         {
                             chart._type === "model.BubbleChart" && <BubbleChartInfo chart={chart} />
+                        }
+                        {
+                            chart._type === "model.LineChart" && <LineChartInfo chart={chart} />
                         }
                     </div>
                 }
