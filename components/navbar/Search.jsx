@@ -20,11 +20,7 @@ export default function Search() {
     }, [router])
 
     const performDashboardSearch = useCallback(() => {
-        if (query) router.push(`/dashboard`, {
-            query: {
-                term: query
-            }
-        })
+        if (query) router.push(`/dashboard?${(new URLSearchParams({term: query})).toString()}`)
     }, [query, router])
 
     return <Combobox className="w-96" value={query} onChange={setQuery}>

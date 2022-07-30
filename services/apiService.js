@@ -116,7 +116,12 @@ export async function updateChart(dashboardId, chart) {
 }
 
 export async function searchDashboards(term, size, from) {
-    return fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/dashboard?${new URLSearchParams({ term, size, from }).toString()}`)
+    const params = new URLSearchParams()
+    params.append("size", size)
+    params.append("from", from)
+    if(term || term === '') params.append("term", term)
+
+    return fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/dashboard?${params.toString()}`)
         .then(res => {
             if (res.status === 200) {
                 return res.json()
