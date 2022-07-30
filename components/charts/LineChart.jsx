@@ -11,8 +11,8 @@ export function LineChart({ chart, chartData }) {
     const lines = useMemo(() => [...new Set(transformedData.flatMap(Object.keys).filter(key => key !== "key"))], [transformedData])
     return (
         <div className="grow flex flex-col justify-center mx-2" ref={divRef}>
-            <ResponsiveContainer width={divBounds.width} height={100}>
-                <LC width={divBounds.width} height={100} data={transformedData} margin={{
+            <ResponsiveContainer width={divBounds.width} height={200}>
+                <LC width={divBounds.width} height={200} data={transformedData} margin={{
                     top: 5,
                     right: 30,
                     left: 20,
