@@ -14,13 +14,14 @@ const columns = 5
 export default function Dashboard({ dashboard, chartsMetadata }) {
     const router = useRouter()
 
+    const [cachedDashboard, setCachedDashboard] = useState(dashboard)
     const [dashboardId, setDashboardId] = useState(null)
     const [dashboardData, setDashboardData] = useState({})
     const [isLoading, setLoading] = useState(false)
     const [error, setError] = useState(false)
     const [edit, setEdit] = useState(false)
 
-    const charts = useMemo(() => dashboard?.charts || [], [dashboard, edit])
+    const charts = useMemo(() => cachedDashboard?.charts || [], [cachedDashboard, edit])
 
     useEffect(() => {
         const dashboardId = router.query['dashboard-id']
@@ -62,9 +63,10 @@ export default function Dashboard({ dashboard, chartsMetadata }) {
                 const id = i.split('+')[0]
                 return [id, visualizationData]
             }))
-            await updateVisualizationDataBE(dashboardId, visualizationData)
+            const updatedDashboard = await updateVisualizationDataBE(dashboardId, visualizationData)
+            setCachedDashboard(updatedDashboard)
         }
-    }, [dashboardId])
+    }, [dashboardId, setCachedDashboard])
 
     return (
         <>
@@ -74,13 +76,13 @@ export default function Dashboard({ dashboard, chartsMetadata }) {
             <div className="border border-black rounded-md shadow-md p-1 px-4 mb-2 flex flex-row justify-between">
                 <div className="m-1 w-full flex flex-row justify-between items-center">
                     <div className="flex flex-row p-1 gap-1">
-                        <span>{dashboard.public ? "Public" : "Private"} dashboard: </span>
-                        <h2>{dashboard.name}</h2>
+                        <span>{cachedDashboard.public ? "Public" : "Private"} dashboard: </span>
+                        <h2>{cachedDashboard.name}</h2>
                     </div>
                     <div className="flex flex-row p-1 gap-2 items-center">
-                        <Link href={`/dashboard/${dashboard.id}/chart/create`}>Add chart</Link>
-                        <Link href={`/dashboard/${dashboard.id}/edit`}>Edit dashboard</Link>
-                        <Link href={`/dashboard/${dashboard.id}/delete`}>Delete dashboard</Link>
+                        <Link href={`/dashboard/${cachedDashboard.id}/chart/create`}>Add chart</Link>
+                        <Link href={`/dashboard/${cachedDashboard.id}/edit`}>Edit dashboard</Link>
+                        <Link href={`/dashboard/${cachedDashboard.id}/delete`}>Delete dashboard</Link>
                         <div className="flex flex-row gap-1 items-center"><span>Change placement:</span><Switch checked={edit} onChange={setEdit} className={`${edit ? 'bg-teal-900' : 'bg-teal-700'}
           relative inline-flex h-[38px]
            w-[74px] shrink-0 
