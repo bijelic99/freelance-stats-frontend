@@ -131,3 +131,18 @@ export async function searchDashboards(term, size, from) {
             }
         })
 }
+
+export async function updateVisualizationData(dashboardId, visualizationDataObj) {
+    return fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/dashboard/${dashboardId}/charts/visualizationData`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(visualizationDataObj)
+    })
+        .then(async res => {
+            if (res.status !== 200) throw new Error(`Server returned non 200 response: '${res.status}'`)
+            const chart = await res.json()
+            return chart
+        })
+}

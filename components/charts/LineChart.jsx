@@ -24,7 +24,7 @@ export function LineChart({ chart, chartData }) {
                     <Tooltip />
                     <Legend />
                     {
-                        lines.map((line, i) => <Line type='monotone' dataKey={line} stroke={COLORS[i % COLORS.length]} />)
+                        lines.map((line, i) => <Line key={i} type='monotone' dataKey={line} stroke={COLORS[i % COLORS.length]} />)
                     }
                 </LC>
             </ResponsiveContainer>

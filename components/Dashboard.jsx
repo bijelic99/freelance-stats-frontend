@@ -4,15 +4,15 @@ import GridLayout from "react-grid-layout";
 import useMeasure from "react-use-measure";
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { cssOverride } from "../staticValues/loader-config";
 import Chart from "./charts/Chart";
-import { getChartData } from "../services/apiService";
+import { getChartData, updateVisualizationData as updateVisualizationDataBE } from "../services/apiService";
 
 const columns = 5
 
 export default function Dashboard({ dashboard }) {
     const router = useRouter()
 
+    const [dashboardId, setDashboardId] = useState(null)
     const [dashboardData, setDashboardData] = useState({})
     const [isLoading, setLoading] = useState(false)
     const [error, setError] = useState(false)
@@ -20,6 +20,7 @@ export default function Dashboard({ dashboard }) {
     useEffect(() => {
         const dashboardId = router.query['dashboard-id']
         if (dashboardId) {
+            setDashboardId(dashboardId)
             setLoading(true)
             getChartData(dashboardId)
                 .then((data) => {
@@ -33,7 +34,7 @@ export default function Dashboard({ dashboard }) {
                     setLoading(false)
                 })
         }
-    }, [router, setDashboardData, setLoading, setError])
+    }, [router, setDashboardData, setLoading, setError, setDashboardId])
 
     const [dashboardRef, dashboardBounds] = useMeasure()
 
@@ -48,6 +49,16 @@ export default function Dashboard({ dashboard }) {
             )
         }, []
     )
+
+    const updateVisualizationData = useCallback(async (layout) => {
+        if (dashboardId && layout) {
+            const visualizationData = Object.fromEntries(layout.map(l => {
+                const { i: id, ...visualizationData } = l
+                return [id, visualizationData]
+            }))
+            await updateVisualizationDataBE(dashboardId, visualizationData)
+        }
+    }, [dashboardId])
 
     return (
         <>
@@ -68,10 +79,10 @@ export default function Dashboard({ dashboard }) {
                 </div>
             </div>
             <div className="border border-black rounded-md shadow-md" ref={dashboardRef}>
-                <GridLayout className="layout" cols={columns} width={dashboardBounds.width}>
+                <GridLayout className="layout" cols={columns} width={dashboardBounds.width} onLayoutChange={updateVisualizationData}>
                     {
                         dashboard.charts.map((chart, i) => (
-                            <div key={i} data-grid={{...chart.visualizationData, isResizable: false}}>
+                            <div key={chart.id} data-grid={{ ...chart.visualizationData, isResizable: false }}>
                                 <Chart dashboardId={router.query['dashboard-id']} isLoading={isLoading} chart={chart} chartData={dashboardData[chart.id]} />
                             </div>
                         ))
