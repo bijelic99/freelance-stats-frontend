@@ -3,10 +3,10 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 import Dashboard from "../../../components/Dashboard";
-import { getDashboard } from "../../../services/apiService";
+import { fetchChartsMetadata, getDashboard } from "../../../services/apiService";
 import { cssOverride } from "../../../staticValues/loader-config";
 
-export default function DashboardPage() {
+export default function DashboardPage({chartsMetadata}) {
     const router = useRouter()
 
     const [dashboard, setDashboard] = useState(null)
@@ -41,8 +41,26 @@ export default function DashboardPage() {
                 error && <div>Unexpected error happened</div>
             }
             {
-                dashboard && <Dashboard dashboard={dashboard} />
+                dashboard && <Dashboard dashboard={dashboard} chartsMetadata={chartsMetadata} />
             }
         </>
     )
+}
+
+export async function getStaticPaths() {
+
+    return {
+        paths: [],
+        fallback: 'blocking'
+    }
+}
+
+export async function getStaticProps() {
+    const chartsMetadata = await fetchChartsMetadata()
+
+    return {
+        props: {
+            chartsMetadata
+        }
+    }
 }
