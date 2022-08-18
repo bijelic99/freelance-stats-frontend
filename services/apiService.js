@@ -122,9 +122,9 @@ export async function searchDashboards(term, size, from) {
     if(term || term === '') params.append("term", term)
 
     return fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/dashboard?${params.toString()}`)
-        .then(res => {
+        .then(async res => {
             if (res.status === 200) {
-                return res.json()
+                return await res.json()
             }
             else {
                 throw new Error(`Server returned non 200 response: '${res.status}'`)
