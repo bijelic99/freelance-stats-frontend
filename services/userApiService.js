@@ -1,13 +1,10 @@
 export async function checkIfUsernameExists(username) {
-    const request = await fetch(`${process.env.NEXT_USER_API_URL}/api/v1/user/${username}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_USER_API_URL}/api/v1/user/${username}`, {
         method: 'HEAD'
     })
-    if (request.status === 200) {
-        return true
-    }
-    else if (request.status === 404) {
-        return false
-    }
+
+    if (response.ok) return true
+    else if (response.status === 404) return false
     else {
         const message = `Server returned the following status: ${request.status} while checking username`
         console.error(message);
@@ -16,20 +13,21 @@ export async function checkIfUsernameExists(username) {
 }
 
 export async function register(user) {
-    return fetch(`${process.env.NEXT_USER_API_URL}/api/v1/register`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_USER_API_URL}/api/v1/register`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(user)
-    }).then(async res => {
-        if (res.status !== 201) throw new Error(`Server returned non 201 response: '${res.status}'`)
-        return await res.json()
     })
+
+    if (response.status === 400) return await response.json()
+    else if (response.status !== 201) throw new Error(`Server returned non 201 response: '${response.status}'`)
+    else return await response.json()
 }
 
 export async function login(credentials) {
-    return fetch(`${process.env.NEXT_USER_API_URL}/api/v1/login`, {
+    return fetch(`${process.env.NEXT_PUBLIC_USER_API_URL}/api/v1/login`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -42,7 +40,7 @@ export async function login(credentials) {
 }
 
 export async function getUser(userId) {
-    return fetch(`${process.env.NEXT_USER_API_URL}/api/v1/user/${userId}`).then(async res => {
+    return fetch(`${process.env.NEXT_PUBLIC_USER_API_URL}/api/v1/user/${userId}`).then(async res => {
         if (res.status !== 200) throw new Error(`Server returned non 200 response: '${res.status}'`)
         return await res.json()
     })
@@ -54,14 +52,14 @@ export async function searchUsers(term, size, from) {
     params.append("from", from)
     if (term || term === '') params.append("term", term)
 
-    return fetch(`${process.env.NEXT_USER_API_URL}/api/v1/user?${params.toString()}`).then(async res => {
+    return fetch(`${process.env.NEXT_PUBLIC_USER_API_URL}/api/v1/user?${params.toString()}`).then(async res => {
         if (res.status !== 200) throw new Error(`Server returned non 200 response: '${res.status}'`)
         return await res.json()
     })
 }
 
 export async function updateUser(user) {
-    return fetch(`${process.env.NEXT_USER_API_URL}/api/v1/user/${user.id}`, {
+    return fetch(`${process.env.NEXT_PUBLIC_USER_API_URL}/api/v1/user/${user.id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -74,7 +72,7 @@ export async function updateUser(user) {
 }
 
 export async function updatePassword(userId, passwordPayload) {
-    return fetch(`${process.env.NEXT_USER_API_URL}/api/v1/user/${userId}/updatePassword`, {
+    return fetch(`${process.env.NEXT_PUBLIC_USER_API_URL}/api/v1/user/${userId}/updatePassword`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -87,7 +85,7 @@ export async function updatePassword(userId, passwordPayload) {
 }
 
 export async function deleteUser(userId) {
-    return fetch(`${process.env.NEXT_USER_API_URL}/api/v1/user/${userId}`, { method: 'DELETE' }).then(async res => {
+    return fetch(`${process.env.NEXT_PUBLIC_USER_API_URL}/api/v1/user/${userId}`, { method: 'DELETE' }).then(async res => {
         if (res.status !== 200) throw new Error(`Server returned non 200 response: '${res.status}'`)
         return
     })
