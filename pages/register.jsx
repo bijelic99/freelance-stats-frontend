@@ -2,12 +2,13 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useCallback, useState } from 'react'
-import { checkIfUsernameExists, register } from '../services/userApiService'
+import { useUserApiService } from '../hooks/useUserApiService'
 
 export default function Register() {
   const [submited, setSubmited] = useState(false)
   const [error, setError] = useState()
   const router = useRouter()
+  const { checkIfUsernameExists, register } = useUserApiService()
 
   const onSubmit = useCallback(async (e)=>{
     setSubmited(true)

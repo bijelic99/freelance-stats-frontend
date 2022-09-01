@@ -2,7 +2,7 @@ import { useCallback, useMemo } from "react";
 import useUser from "./useUser";
 
 export default function useApiService() {
-    const { token, logout, authHeaders } = useUser()
+    const { logout, authHeaders, login: localLogin } = useUser()
 
     const checkIfUsernameExists = useCallback(async (username) => {
         const response = await fetch(`${process.env.NEXT_PUBLIC_USER_API_URL}/api/v1/user/${username}`, {
@@ -41,7 +41,9 @@ export default function useApiService() {
             body: JSON.stringify(credentials)
         }).then(async res => {
             if (res.status !== 200) throw new Error(`Server returned non 200 response: '${res.status}'`)
-            return await res.json()
+            const {user, token} = await res.json()
+            await localLogin(user, token)
+            return user
         })
     }, [])
 

@@ -1,7 +1,6 @@
 import { useCallback, useContext, useMemo } from "react";
 import { TokenContext } from "../contexts/tokenContext";
 import { UserContext } from "../contexts/userContext";
-import { login as backendLogin } from "../services/userApiService"
 
 export default function useUser() {
     const { token, setToken } = useContext(TokenContext)
@@ -22,29 +21,23 @@ export default function useUser() {
 
     const isLoggedIn = useMemo(() => user && token && true, [user, token])
 
-    const login = useCallback(async (username, password)=>{
-        if(!isLoggedIn) {
-            backendLogin({
-                username,
-                password
-            })
-            .then(({user, token})=>{
-                localStorage.setItem("token", token)
-                setToken(token)
-                localStorage.setItem("user", JSON.stringify(user))
-                setUser(user)
-                return user
-            })
+    const login = useCallback(async (user, token) => {
+        if (!isLoggedIn) {
+            localStorage.setItem("token", token)
+            setToken(token)
+            localStorage.setItem("user", JSON.stringify(user))
+            setUser(user)
+            return user
         } else throw new Error("Login impossible, already logged in")
     }, [isLoggedIn, setToken, setUser])
 
     const logout = useCallback(() => {
-        if(isLoggedIn) {
+        if (isLoggedIn) {
             localStorage.removeItem("token")
             setToken(null)
             localStorage.removeItem("user")
             setUser(null)
-        } else  throw new Error("Logout impossible, not logged in")
+        } else throw new Error("Logout impossible, not logged in")
     }, [isLoggedIn, setToken, setUser])
 
     const authHeaders = useMemo(() => {
@@ -54,5 +47,5 @@ export default function useUser() {
     }, [token])
 
 
-    return {user, token, isLoggedIn, login, logout, authHeaders}
+    return { user, token, isLoggedIn, login, logout, authHeaders }
 }
