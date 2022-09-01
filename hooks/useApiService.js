@@ -2,13 +2,7 @@ import { useCallback, useMemo } from "react";
 import useUser from "./useUser";
 
 export default function useApiService() {
-    const { token, logout } = useUser()
-
-    const authHeaders = useMemo(() => {
-        const headers = new Headers()
-        headers.append('Authorization', `Bearer ${token}`)
-        return headers
-    }, [token])
+    const { token, logout, authHeaders } = useUser()
 
     const fetchSources = useCallback(async () => {
         const request = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/sources`, {
@@ -193,5 +187,19 @@ export default function useApiService() {
                 return chart
             })
     }, [authHeaders, logout])
+
+    return {
+        fetchSources,
+        fetchChartsMetadata,
+        getDashboard,
+        createDashboard,
+        updateDashboard,
+        getChartData,
+        getChart,
+        addChart,
+        updateChart,
+        searchDashboards,
+        updateVisualizationData
+    }
 
 }

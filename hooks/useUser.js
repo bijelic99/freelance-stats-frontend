@@ -1,4 +1,4 @@
-import { useCallback, useContext, useMemo, useState } from "react";
+import { useCallback, useContext, useMemo } from "react";
 import { TokenContext } from "../contexts/tokenContext";
 import { UserContext } from "../contexts/userContext";
 import { login as backendLogin } from "../services/userApiService"
@@ -47,6 +47,12 @@ export default function useUser() {
         } else  throw new Error("Logout impossible, not logged in")
     }, [isLoggedIn, setToken, setUser])
 
+    const authHeaders = useMemo(() => {
+        const headers = new Headers()
+        headers.append('Authorization', `Bearer ${token}`)
+        return headers
+    }, [token])
 
-    return {user, token, isLoggedIn, login, logout}
+
+    return {user, token, isLoggedIn, login, logout, authHeaders}
 }
