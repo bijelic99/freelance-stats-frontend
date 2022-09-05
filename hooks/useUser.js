@@ -1,22 +1,29 @@
+import { useRouter } from "next/router";
 import { useCallback, useContext, useMemo } from "react";
 import { TokenContext } from "../contexts/tokenContext";
 import { UserContext } from "../contexts/userContext";
 
 export default function useUser() {
-    const { token, setToken } = useContext(TokenContext)
+    const {token, setToken} = useContext(TokenContext)
     const localStorageToken = localStorage.getItem("token")
-    if (localStorageToken) {
-        setToken(localStorageToken)
-    } else {
-        setToken(null)
+    const router = useRouter()
+    if(token !== localStorageToken) {
+        if (localStorageToken) {
+            setToken(localStorageToken)
+        } else {
+            setToken(null)
+        }
     }
+    
 
     const { user, setUser } = useContext(UserContext)
     const localStorageUser = JSON.parse(localStorage.getItem("user"))
-    if (localStorageUser) {
-        setUser(localStorageUser)
-    } else {
-        localStorageUser(null)
+    if (user !== localStorageUser) {
+        if (localStorageUser) {
+            setUser(localStorageUser)
+        } else {
+            setUser(null)
+        }
     }
 
     const isLoggedIn = useMemo(() => user && token && true, [user, token])
@@ -27,6 +34,7 @@ export default function useUser() {
             setToken(token)
             localStorage.setItem("user", JSON.stringify(user))
             setUser(user)
+            router.push('/')
             return user
         } else throw new Error("Login impossible, already logged in")
     }, [isLoggedIn, setToken, setUser])
@@ -37,6 +45,7 @@ export default function useUser() {
             setToken(null)
             localStorage.removeItem("user")
             setUser(null)
+            router.push('/login')
         } else throw new Error("Logout impossible, not logged in")
     }, [isLoggedIn, setToken, setUser])
 

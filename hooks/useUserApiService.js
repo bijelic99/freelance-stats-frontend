@@ -1,7 +1,8 @@
 import { useCallback, useMemo } from "react";
 import useUser from "./useUser";
 
-export default function useApiService() {
+export default function useUserApiService() {
+    
     const { logout, authHeaders, login: localLogin } = useUser()
 
     const checkIfUsernameExists = useCallback(async (username) => {

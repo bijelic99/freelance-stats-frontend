@@ -6,19 +6,29 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { TokenContext } from '../contexts/tokenContext';
 import { UserContext } from '../contexts/userContext';
+import RouteGuard from '../components/RouteGuard';
+import NoSSR from 'react-no-ssr';
+import { useState } from 'react';
 
 function MyApp({ Component, pageProps }) {
+  const [token, setToken] = useState(null)
+  const [user, setUser] = useState(null)
+
   return (
     <>
-      <TokenContext.Provider>
-        <UserContext.Provider>
-          <Navbar />
-          <ToastContainer />
-          <main className='mt-2 mx-2'>
-            <Component {...pageProps} />
-          </main>
-        </UserContext.Provider>
-      </TokenContext.Provider>
+      <NoSSR>
+        <TokenContext.Provider value={{token, setToken}}>
+          <UserContext.Provider value={{user, setUser}}>
+            <RouteGuard>
+              <Navbar />
+              <ToastContainer />
+              <main className='mt-2 mx-2'>
+                <Component {...pageProps} />
+              </main>
+            </RouteGuard>
+          </UserContext.Provider>
+        </TokenContext.Provider>
+      </NoSSR>
     </>
   )
 }

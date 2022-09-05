@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useCallback, useState } from 'react'
-import { useUserApiService } from '../hooks/useUserApiService'
+import useUserApiService from '../hooks/useUserApiService'
 
 export default function Register() {
   const [submited, setSubmited] = useState(false)
