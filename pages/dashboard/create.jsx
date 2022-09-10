@@ -3,11 +3,12 @@ import { useCallback } from "react";
 import DashboardForm from "../../components/forms/DashboardForm";
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router'
-import { createDashboard } from "../../services/apiService";
+import useApiService from '../../hooks/useApiService'
 
 export default function CreateDashboard() {
     const currentUserId = ""
     const router = useRouter()
+    const {createDashboard} = useApiService()
 
     const submitForm = useCallback(async (dashboard) => {
         const response = createDashboard(dashboard)

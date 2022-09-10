@@ -20,7 +20,8 @@ export default function ChartForm({ chartsMetadata, sources, submitForm, chart =
 
     const [submited, setSubmited] = useState(false)
 
-    const [selectedType, setSelectedType ] = useState(edit ? chart._type : Object.entries(chartsMetadata)[0][1]?.class)
+    const metadataEntries = Object.entries(chartsMetadata)
+    const [selectedType, setSelectedType ] = useState(edit ? chart._type : metadataEntries[0] ? metadataEntries[0][1]?.class : null)
 
     const _typeOnChange = useCallback((e) => {
         e.preventDefault()
@@ -28,7 +29,7 @@ export default function ChartForm({ chartsMetadata, sources, submitForm, chart =
     }, [setSelectedType])
 
     const selectedChart = useMemo(() => {
-        return Object.values(chartsMetadata).find(value => value.class === selectedType)
+        return Object.values(chartsMetadata).find(value => value.class === selectedType) || {}
     }, [selectedType, chartsMetadata])
 
     const transformInput = useCallback(
@@ -79,9 +80,9 @@ export default function ChartForm({ chartsMetadata, sources, submitForm, chart =
                     }
                 </select>
                 <label htmlFor="width">Width: </label>
-                <input id="width" name="width" type="number" className="border p-1" min={selectedChart.visualizationLimits.minW} max={selectedChart.visualizationLimits.maxW} required defaultValue={chart?.visualizationData.w || null}/>
+                <input id="width" name="width" type="number" className="border p-1" min={selectedChart.visualizationLimits?.minW} max={selectedChart.visualizationLimits?.maxW} required defaultValue={chart?.visualizationData.w || null}/>
                 <label htmlFor="height">Height: </label>
-                <input id="height" name="height" type="number" className="border p-1" min={selectedChart.visualizationLimits.minH} max={selectedChart.visualizationLimits.maxH} required defaultValue={chart?.visualizationData.h || null}/>
+                <input id="height" name="height" type="number" className="border p-1" min={selectedChart.visualizationLimits?.minH} max={selectedChart.visualizationLimits?.maxH} required defaultValue={chart?.visualizationData.h || null}/>
                 <label htmlFor="_type">Chart: </label>
                 <select onChange={_typeOnChange} id="_type" name="_type" className="border p-1" required disabled={edit} defaultValue={chart?._type || null}>
                     {

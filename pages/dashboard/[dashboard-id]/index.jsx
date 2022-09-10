@@ -3,15 +3,22 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 import Dashboard from "../../../components/Dashboard";
-import { fetchChartsMetadata, getDashboard } from "../../../services/apiService";
+import useApiService from "../../../hooks/useApiService";
 import { cssOverride } from "../../../staticValues/loader-config";
 
-export default function DashboardPage({chartsMetadata}) {
+export default function DashboardPage() {
     const router = useRouter()
 
     const [dashboard, setDashboard] = useState(null)
     const [isLoading, setLoading] = useState(false)
     const [error, setError] = useState(false)
+    const {fetchChartsMetadata, getDashboard} = useApiService()
+    
+    const [chartsMetadata, setChartsMetadata] = useState(null)
+    useEffect(() => {
+        fetchChartsMetadata()
+            .then(metadata => setChartsMetadata(metadata))
+    }, [])
 
     useEffect(() => {
         const dashboardId = router.query['dashboard-id']
@@ -45,22 +52,4 @@ export default function DashboardPage({chartsMetadata}) {
             }
         </>
     )
-}
-
-export async function getStaticPaths() {
-
-    return {
-        paths: [],
-        fallback: 'blocking'
-    }
-}
-
-export async function getStaticProps() {
-    const chartsMetadata = await fetchChartsMetadata()
-
-    return {
-        props: {
-            chartsMetadata
-        }
-    }
 }

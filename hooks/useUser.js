@@ -1,38 +1,18 @@
 import { useRouter } from "next/router";
-import { useCallback, useContext, useMemo } from "react";
-import { TokenContext } from "../contexts/tokenContext";
-import { UserContext } from "../contexts/userContext";
+import { useCallback, useState, useEffect, useMemo } from "react";
+import { callFunctionAndThrowOnHttpErrorWithStatus } from "../utils/httpRequestUtils";
+import { useLocalStorage } from 'react-use'
 
 export default function useUser() {
-    const {token, setToken} = useContext(TokenContext)
-    const localStorageToken = localStorage.getItem("token")
+    const [token, setToken, removeToken] = useLocalStorage('token', null)
+    const [user, setUser, removeUser] = useLocalStorage('user', null)
     const router = useRouter()
-    if(token !== localStorageToken) {
-        if (localStorageToken) {
-            setToken(localStorageToken)
-        } else {
-            setToken(null)
-        }
-    }
-    
-
-    const { user, setUser } = useContext(UserContext)
-    const localStorageUser = JSON.parse(localStorage.getItem("user"))
-    if (user !== localStorageUser) {
-        if (localStorageUser) {
-            setUser(localStorageUser)
-        } else {
-            setUser(null)
-        }
-    }
 
     const isLoggedIn = useMemo(() => user && token && true, [user, token])
 
     const login = useCallback(async (user, token) => {
         if (!isLoggedIn) {
-            localStorage.setItem("token", token)
             setToken(token)
-            localStorage.setItem("user", JSON.stringify(user))
             setUser(user)
             router.push('/')
             return user
@@ -41,20 +21,21 @@ export default function useUser() {
 
     const logout = useCallback(() => {
         if (isLoggedIn) {
-            localStorage.removeItem("token")
-            setToken(null)
-            localStorage.removeItem("user")
-            setUser(null)
+            removeToken()
+            removeUser()
             router.push('/login')
         } else throw new Error("Logout impossible, not logged in")
     }, [isLoggedIn, setToken, setUser])
 
     const authHeaders = useMemo(() => {
-        const headers = new Headers()
-        headers.append('Authorization', `Bearer ${token}`)
-        return headers
+        return { 'Authorization': `Bearer ${token}` }
     }, [token])
 
+    const logoutIf401 = useCallback(callFunctionAndThrowOnHttpErrorWithStatus(logout, 401), [logout])
 
-    return { user, token, isLoggedIn, login, logout, authHeaders }
+    const authHeadersWithJsonContentType = useMemo(()=>{
+        return {...authHeaders, 'Content-Type': 'application/json'}
+    }, [authHeaders])
+
+    return { user, token, isLoggedIn, login, logout, authHeaders, logoutIf401, authHeadersWithJsonContentType }
 }

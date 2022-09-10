@@ -1,19 +1,21 @@
 import Head from "next/head";
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState, useEffect, useContext } from "react";
 import DashboardForm from "../../../components/forms/DashboardForm";
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router'
 import ClipLoader from "react-spinners/ClipLoader";
 import { cssOverride } from "../../../staticValues/loader-config";
-import { getDashboard, updateDashboard } from "../../../services/apiService";
+import useApiService from "../../../hooks/useApiService";
+import { UserManagementContext } from "../../../contexts/userManagementContext";
 
 export default function EditDashboard() {
-    const currentUserId = ""
     const router = useRouter()
 
     const [dashboard, setDashboard] = useState(null)
     const [isLoading, setLoading] = useState(false)
     const [error, setError] = useState(false)
+    const { getDashboard, updateDashboard } = useApiService()
+    const { user } = useContext(UserManagementContext)
 
     useEffect(() => {
         const dashboardId = router.query['dashboard-id']
@@ -62,7 +64,7 @@ export default function EditDashboard() {
                 error && <div>Unexpected error happened</div>
             }
             {
-                dashboard && <DashboardForm submitForm={submitForm} dashboard={dashboard} currentUserId={currentUserId} submitButtonText="Update dashboard" />
+                dashboard && <DashboardForm submitForm={submitForm} dashboard={dashboard} currentUserId={user?.id} submitButtonText="Update dashboard" />
             }
         </>
     )

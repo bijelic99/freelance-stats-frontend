@@ -4,7 +4,7 @@ import Search from './Search'
 import useUser from '../../hooks/useUser'
 
 export default function Navbar() {
-  const { isLoggedIn } = useUser()
+  const { isLoggedIn, user, logout } = useUser()
 
   return (
     <>
@@ -16,7 +16,8 @@ export default function Navbar() {
             <div className='flex flex-row gap-x-2'>
               <div className=""><Link href='/dashboard/create'><a>Create dashboard</a></Link></div>
               <div className=""><Link href='/dashboard'><a>Open dashboard</a></Link></div>
-              <div className=""><Link href='/user'><a>User</a></Link></div>
+              <div className=""><Link href={`/user/${user.id}`}><a>{user.username}</a></Link></div>
+              <div className=""><button onClick={logout}>Log out</button></div>
             </div>
           </>
         }

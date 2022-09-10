@@ -5,9 +5,9 @@ import useMeasure from "react-use-measure";
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import Chart from "./charts/Chart";
-import { getChartData, updateVisualizationData as updateVisualizationDataBE } from "../services/apiService";
 import { Switch } from "@headlessui/react";
 import { getChartVisualizationDataLimits } from "../utils/chartsMetadataUtils";
+import useApiService from "../hooks/useApiService";
 
 const columns = 5
 
@@ -20,6 +20,8 @@ export default function Dashboard({ dashboard, chartsMetadata }) {
     const [isLoading, setLoading] = useState(false)
     const [error, setError] = useState(false)
     const [edit, setEdit] = useState(false)
+
+    const { getChartData, updateVisualizationData: updateVisualizationDataBE } = useApiService()
 
     const charts = useMemo(() => cachedDashboard?.charts || [], [cachedDashboard, edit])
 

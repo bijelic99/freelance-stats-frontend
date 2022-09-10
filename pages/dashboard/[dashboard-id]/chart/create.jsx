@@ -1,11 +1,20 @@
 import Head from "next/head";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ChartForm from "../../../../components/forms/chartForm/ChartForm";
-import { addChart, fetchChartsMetadata, fetchSources } from "../../../../services/apiService";
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router'
+import useApiService from "../../../../hooks/useApiService";
 
-function ChartCreate({sources, chartsMetadata}) {
+function ChartCreate() {
+
+    const [chartsMetadata, setChartsMetadata] = useState({})
+    const [sources, setSources] = useState([])
+    const { addChart, fetchChartsMetadata, fetchSources } = useApiService()
+
+    useEffect(()=>{
+        fetchChartsMetadata().then(setChartsMetadata)
+        fetchSources().then(setSources)
+    }, [])
 
     const router = useRouter()
 
@@ -39,26 +48,6 @@ function ChartCreate({sources, chartsMetadata}) {
             <ChartForm sources={sources} chartsMetadata={chartsMetadata} submitForm={submitForm}></ChartForm>
         </>
     )
-}
-
-export async function getStaticPaths() {
-
-    return {
-        paths: [],
-        fallback: 'blocking'
-    }
-}
-
-export async function getStaticProps() {
-    const sources = await fetchSources()
-    const chartsMetadata = await fetchChartsMetadata()
-
-    return {
-        props: {
-            sources,
-            chartsMetadata
-        }
-    }
 }
 
 export default ChartCreate
