@@ -1,10 +1,10 @@
-import Head from 'next/head'
 import Link from 'next/link'
 import Search from './Search'
-import useUser from '../../hooks/useUser'
+import { useContext } from 'react'
+import { UserManagementContext } from '../../contexts/userManagementContext'
 
 export default function Navbar() {
-  const { isLoggedIn, user, logout } = useUser()
+  const { isLoggedIn, user, logout } = useContext(UserManagementContext)
 
   return (
     <>

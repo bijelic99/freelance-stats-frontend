@@ -1,19 +1,24 @@
 import Head from "next/head";
 import { useCallback, useState, useEffect } from "react";
 import ChartForm from "../../../../../components/forms/chartForm/ChartForm";
-import { fetchChartsMetadata, fetchSources, getChart, updateChart } from "../../../../../services/apiService";
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router'
 import ClipLoader from "react-spinners/ClipLoader";
 import { cssOverride } from "../../../../../staticValues/loader-config";
+import useApiService from "../../../../../hooks/useApiService";
+import { ChartMetadataContext } from "../../../../../contexts/chartMetadataContext";
+import useChartMetadata from "../../../../../hooks/useChartMetadata";
+import { SourcesContext } from "../../../../../contexts/sourcesContext";
+import useSources from "../../../../../hooks/useSources";
 
-function ChartEdit({sources, chartsMetadata}) {
+function ChartEdit({ sources, chartsMetadata }) {
 
     const router = useRouter()
 
     const [chart, setChart] = useState(null)
     const [isLoading, setLoading] = useState(false)
     const [error, setError] = useState(false)
+    const { getChart, updateChart } = useApiService()
 
     useEffect(() => {
         const dashboardId = router.query['dashboard-id']
@@ -32,13 +37,13 @@ function ChartEdit({sources, chartsMetadata}) {
                     setLoading(false)
                 })
         }
-    }, [router, setChart, setLoading, setError])    
+    }, [router, setChart, setLoading, setError])
 
     const submitForm = useCallback(async (chart) => {
         const dashboardId = router.query['dashboard-id']
-        if(dashboardId) {
+        if (dashboardId) {
             const response = updateChart(dashboardId, chart)
-            
+
             response.then(async chart => {
                 router.push(`/dashboard/${dashboardId}`)
             })
@@ -51,7 +56,7 @@ function ChartEdit({sources, chartsMetadata}) {
                     error: 'Unexpected error while updating the chart'
                 }
             )
-    
+
             return response
         } else return Promise.reject(new Error("DashboardId or chartId were not set"))
     }, [])
@@ -62,34 +67,23 @@ function ChartEdit({sources, chartsMetadata}) {
                 <title>Create chart</title>
             </Head>
             <ClipLoader loading={isLoading} cssOverride={cssOverride} />
-            {
-                error && <div>Unexpected error happened</div>
-            }
-            {
-                chart && <ChartForm sources={sources} chartsMetadata={chartsMetadata} submitForm={submitForm} chart={chart} edit submitButtonText="Edit form"></ChartForm> 
-            }
+            <ChartMetadataContext.Provider value={useChartMetadata()}>
+                <SourcesContext.Provider value={useSources()}>
+                    <>
+                        {
+                            error && <div>Unexpected error happened</div>
+                        }
+                        {
+                            chart && <>
+
+                                <ChartForm submitForm={submitForm} chart={chart} edit submitButtonText="Edit form"></ChartForm>
+                            </>
+                        }
+                    </>
+                </SourcesContext.Provider>
+            </ChartMetadataContext.Provider>
         </>
     )
-}
-
-export async function getStaticPaths() {
-
-    return {
-        paths: [],
-        fallback: 'blocking'
-    }
-}
-
-export async function getStaticProps() {
-    const sources = await fetchSources()
-    const chartsMetadata = await fetchChartsMetadata()
-
-    return {
-        props: {
-            sources,
-            chartsMetadata
-        }
-    }
 }
 
 export default ChartEdit

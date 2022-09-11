@@ -1,8 +1,8 @@
 import { Fragment, useCallback, useEffect, useState } from 'react'
 import { Combobox, Transition } from '@headlessui/react'
 import { SearchIcon } from '@heroicons/react/solid'
-import { searchDashboards } from '../../services/apiService'
 import { useRouter } from 'next/router'
+import useApiService from '../../hooks/useApiService'
 
 export default function Search() {
 
@@ -10,6 +10,9 @@ export default function Search() {
 
     const [query, setQuery] = useState('')
     const [results, setResults] = useState([])
+
+    const { searchDashboards } = useApiService()
+
     useEffect(() => {
         if (query) {
             searchDashboards(query, 10, 0).then(response => setResults(response.hits))

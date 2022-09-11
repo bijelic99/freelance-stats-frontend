@@ -4,7 +4,7 @@ import { executeHttpRequest, HTTPError } from "../utils/httpRequestUtils";
 
 export default function useUserApiService() {
 
-    const { logout, authHeaders, authHeadersWithJsonContentType, login: localLogin } = useContext(UserManagementContext)
+    const { logout, authHeaders, authHeadersWithJsonContentType, login: localLogin, logoutIf401 } = useContext(UserManagementContext)
 
     const checkIfUsernameExists = useCallback(async (username) => executeHttpRequest(
         `${process.env.NEXT_PUBLIC_USER_API_URL}/api/v1/user/${username}`,
@@ -48,7 +48,7 @@ export default function useUserApiService() {
         },
         async (response) => {
             if (response.status === 200) {
-                const { user, token } = await res.json()
+                const { user, token } = await response.json()
                 await localLogin(user, token)
                 return user
             }

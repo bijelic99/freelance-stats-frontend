@@ -1,5 +1,5 @@
 import PieChart from "./charts/PieChart";
-import { useCallback, useState, useEffect, useMemo } from 'react'
+import { useCallback, useState, useEffect, useMemo, useContext } from 'react'
 import GridLayout from "react-grid-layout";
 import useMeasure from "react-use-measure";
 import Link from 'next/link'
@@ -8,6 +8,7 @@ import Chart from "./charts/Chart";
 import { Switch } from "@headlessui/react";
 import { getChartVisualizationDataLimits } from "../utils/chartsMetadataUtils";
 import useApiService from "../hooks/useApiService";
+import { UserManagementContext } from "../contexts/userManagementContext";
 
 const columns = 5
 
@@ -20,6 +21,7 @@ export default function Dashboard({ dashboard, chartsMetadata }) {
     const [isLoading, setLoading] = useState(false)
     const [error, setError] = useState(false)
     const [edit, setEdit] = useState(false)
+    const { user } = useContext(UserManagementContext)
 
     const { getChartData, updateVisualizationData: updateVisualizationDataBE } = useApiService()
 
@@ -81,7 +83,7 @@ export default function Dashboard({ dashboard, chartsMetadata }) {
                         <span>{cachedDashboard.public ? "Public" : "Private"} dashboard: </span>
                         <h2>{cachedDashboard.name}</h2>
                     </div>
-                    <div className="flex flex-row p-1 gap-2 items-center">
+                    { user?.id && cachedDashboard.ownerId == user.id && <div className="flex flex-row p-1 gap-2 items-center">
                         <Link href={`/dashboard/${cachedDashboard.id}/chart/create`}>Add chart</Link>
                         <Link href={`/dashboard/${cachedDashboard.id}/edit`}>Edit dashboard</Link>
                         <Link href={`/dashboard/${cachedDashboard.id}/delete`}>Delete dashboard</Link>
@@ -99,7 +101,8 @@ export default function Dashboard({ dashboard, chartsMetadata }) {
             pointer-events-none inline-block h-[34px] w-[34px] transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
                             />
                         </Switch></div>
-                    </div>
+                    </div>}
+
                 </div>
             </div>
             <div className="border border-black rounded-md shadow-md" ref={dashboardRef}>

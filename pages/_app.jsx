@@ -9,18 +9,25 @@ import RouteGuard from '../components/RouteGuard';
 import NoSSR from 'react-no-ssr';
 import { createContext, useState } from 'react';
 import useUser from '../hooks/useUser';
+import useChartMetadata from '../hooks/useChartMetadata';
+import useSources from '../hooks/useSources';
+import { ChartMetadataContext } from '../contexts/chartMetadataContext';
+import { SourcesContext } from '../contexts/sourcesContext';
 
 function MyApp({ Component, pageProps }) {
-  const userManagementObj = useUser()
 
   return (
     <>
       <NoSSR>
-        <UserManagementContext.Provider value={userManagementObj}>
+        <UserManagementContext.Provider value={useUser()}>
           <Navbar />
           <ToastContainer />
           <main className='mt-2 mx-2'>
-            <Component {...pageProps} />
+            <ChartMetadataContext.Provider value={useChartMetadata()}>
+              <SourcesContext.Provider value={useSources()}>
+                <Component {...pageProps} />
+              </SourcesContext.Provider>
+            </ChartMetadataContext.Provider>
           </main>
         </UserManagementContext.Provider>
       </NoSSR>
