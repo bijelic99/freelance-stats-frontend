@@ -65,6 +65,23 @@ export default function useApiService() {
         [authHeadersWithJsonContentType, logoutIf401]
     )
 
+    const deleteDashboard = useCallback(
+        async (dashboardId) => executeHttpRequest(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/v1/dashboard/${dashboardId}`,
+            'DELETE',
+            null,
+            authHeadersWithJsonContentType,
+            (response) => {
+                if (response.status === 200) {
+                    return
+                }
+                else throw new HTTPError(response.status, `Got non ${status} response, server returned '${response.status}'`)
+            },
+            logoutIf401
+        ),
+        [authHeadersWithJsonContentType, logoutIf401]
+    )
+
     const getChartData = useCallback(
         async (dashboardId) => executeHttpRequest(
             `${process.env.NEXT_PUBLIC_API_URL}/api/v1/dashboard/${dashboardId}/chart-data`,
@@ -113,6 +130,23 @@ export default function useApiService() {
         [authHeadersWithJsonContentType, logoutIf401]
     )
 
+    const deleteChart = useCallback(
+        async (dashboardId, chartId) => executeHttpRequest(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/v1/dashboard/${dashboardId}/charts/${chartId}`,
+            'DELETE',
+            null,
+            authHeadersWithJsonContentType,
+            (response) => {
+                if (response.status === 200) {
+                    return
+                }
+                else throw new HTTPError(response.status, `Got non ${status} response, server returned '${response.status}'`)
+            },
+            logoutIf401
+        ),
+        [authHeadersWithJsonContentType, logoutIf401]
+    )
+
     const searchDashboards = useCallback(
         async (term, size, from) => {
             const params = new URLSearchParams()
@@ -150,10 +184,12 @@ export default function useApiService() {
         getDashboard,
         createDashboard,
         updateDashboard,
+        deleteDashboard,
         getChartData,
         getChart,
         addChart,
         updateChart,
+        deleteChart,
         searchDashboards,
         updateVisualizationData
     }

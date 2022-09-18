@@ -5,10 +5,11 @@ import useMeasure from "react-use-measure";
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import Chart from "./charts/Chart";
-import { Switch } from "@headlessui/react";
+import { Dialog, Switch } from "@headlessui/react";
 import { getChartVisualizationDataLimits } from "../utils/chartsMetadataUtils";
 import useApiService from "../hooks/useApiService";
 import { UserManagementContext } from "../contexts/userManagementContext";
+import { toast } from "react-toastify";
 
 const columns = 5
 
@@ -22,8 +23,9 @@ export default function Dashboard({ dashboard, chartsMetadata }) {
     const [error, setError] = useState(false)
     const [edit, setEdit] = useState(false)
     const { user } = useContext(UserManagementContext)
+    const [isDeleteDialogOpened, setIsDeleteDialogOpened] = useState(false)
 
-    const { getChartData, updateVisualizationData: updateVisualizationDataBE } = useApiService()
+    const { getChartData, updateVisualizationData: updateVisualizationDataBE, deleteDashboard } = useApiService()
 
     const charts = useMemo(() => cachedDashboard?.charts || [], [cachedDashboard, edit])
 
@@ -48,18 +50,6 @@ export default function Dashboard({ dashboard, chartsMetadata }) {
 
     const [dashboardRef, dashboardBounds] = useMeasure()
 
-    const chartRender = useCallback(
-        (chart, i) => {
-            return (
-                <div key={i} data-grid={chart.positionData}>
-                    {
-                        chart.type === 'pie' && <PieChart chart={chart} />
-                    }
-                </div>
-            )
-        }, []
-    )
-
     const updateVisualizationData = useCallback(async (layout) => {
         if (dashboardId && layout) {
             const visualizationData = Object.fromEntries(layout.map(l => {
@@ -72,6 +62,23 @@ export default function Dashboard({ dashboard, chartsMetadata }) {
         }
     }, [dashboardId, setCachedDashboard])
 
+    const deleteDashboardEvent = useCallback(() => {
+        if (dashboardId) {
+            const response = deleteDashboard(dashboardId)
+
+            response.then(() => router.push("/"))
+
+            toast.promise(
+                response,
+                {
+                    pending: 'Deleting the dashboard',
+                    success: 'Successfully deleted the dashboard',
+                    error: 'Unexpected error while deleteing the dashboard'
+                }
+            )
+        }
+    }, [dashboardId, deleteDashboard, router])
+
     return (
         <>
             {
@@ -83,10 +90,10 @@ export default function Dashboard({ dashboard, chartsMetadata }) {
                         <span>{cachedDashboard.public ? "Public" : "Private"} dashboard: </span>
                         <h2>{cachedDashboard.name}</h2>
                     </div>
-                    { user?.id && cachedDashboard.ownerId == user.id && <div className="flex flex-row p-1 gap-2 items-center">
+                    {user?.id && cachedDashboard.ownerId == user.id && <div className="flex flex-row p-1 gap-2 items-center">
                         <Link href={`/dashboard/${cachedDashboard.id}/chart/create`}>Add chart</Link>
                         <Link href={`/dashboard/${cachedDashboard.id}/edit`}>Edit dashboard</Link>
-                        <Link href={`/dashboard/${cachedDashboard.id}/delete`}>Delete dashboard</Link>
+                        <button onClick={() => setIsDeleteDialogOpened(true)}>Delete dashboard</button>
                         <div className="flex flex-row gap-1 items-center"><span>Change placement:</span><Switch checked={edit} onChange={setEdit} className={`${edit ? 'bg-teal-900' : 'bg-teal-700'}
           relative inline-flex h-[38px]
            w-[74px] shrink-0 
@@ -116,6 +123,22 @@ export default function Dashboard({ dashboard, chartsMetadata }) {
                     }
                 </GridLayout>
             </div>
+            <Dialog as="div" className="absolute left-0 top-0 z-10 w-full h-full flex flex-row justify-center items-center bg-slate-300/75" open={isDeleteDialogOpened} onClose={() => setIsDeleteDialogOpened(false)}>
+                <Dialog.Panel className="w-full max-w-md overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl">
+                    <Dialog.Title className="text-lg font-medium leading-6 text-gray-900">Delete dashboard</Dialog.Title>
+                    <Dialog.Description>
+                        This will delete dashboard named: {cachedDashboard.name}
+                    </Dialog.Description>
+
+                    <p>
+                        Are you sure you want to delete dashboard named: {cachedDashboard.name}
+                    </p>
+                    <div className="flex flex-row w-full gap-2">
+                        <button onClick={deleteDashboardEvent}>Yes</button>
+                        <button onClick={() => setIsDeleteDialogOpened(false)}>No</button>
+                    </div>
+                </Dialog.Panel>
+            </Dialog>
         </>
     )
 }

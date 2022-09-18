@@ -1,6 +1,6 @@
 import { useCallback, useContext, useMemo } from "react";
 import { UserManagementContext } from "../contexts/userManagementContext";
-import { executeHttpRequest, HTTPError } from "../utils/httpRequestUtils";
+import { executeHttpRequest, HTTPError, returnJsonOnStatus } from "../utils/httpRequestUtils";
 
 export default function useUserApiService() {
 

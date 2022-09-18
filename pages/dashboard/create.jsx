@@ -1,12 +1,13 @@
 import Head from "next/head";
-import { useCallback } from "react";
+import { useCallback, useContext } from "react";
 import DashboardForm from "../../components/forms/DashboardForm";
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router'
 import useApiService from '../../hooks/useApiService'
+import { UserManagementContext } from "../../contexts/userManagementContext";
 
 export default function CreateDashboard() {
-    const currentUserId = ""
+    const {user} = useContext(UserManagementContext)
     const router = useRouter()
     const {createDashboard} = useApiService()
 
@@ -32,7 +33,7 @@ export default function CreateDashboard() {
             <Head>
                 <title>Create dashboard</title>
             </Head>
-            <DashboardForm submitForm={submitForm} currentUserId={currentUserId} />
+            <DashboardForm submitForm={submitForm} currentUserId={user.id} />
         </>
     )
 }
