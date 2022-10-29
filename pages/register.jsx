@@ -64,7 +64,7 @@ export default function Register() {
           <input type="text" name="lastName" id="lastName" className="border p-1" />
           <label htmlFor="birthDate">Birth date:</label>
           <input type="date" name="birthDate" id="birthDate" className="border p-1" />
-          <button type="submit" className="border p-1" disabled={submited}>Register</button>
+          <button type="submit" className="bg-indigo-500 text-white p-1 my-1 rounded" disabled={submited}>Register</button>
         </form>
         {error && <div className='text-red-800'>{error}</div>}
         <Link href="/login">Already have an account</Link>

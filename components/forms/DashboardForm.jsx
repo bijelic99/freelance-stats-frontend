@@ -63,7 +63,7 @@ export default function DashboardForm({ submitForm, currentUserId, dashboard = n
 
     return (
         <>
-            <form className="flex flex-col gap-1 px-2 py-2" onSubmit={transformInput}>
+            <form className="flex flex-col gap-1 px-2 py-2 w-1/2 mx-auto" onSubmit={transformInput}>
                 <label htmlFor="name">Name: </label>
                 <input id="name" name="name" type="text" className="border p-1" defaultValue={dashboard.name} required />
                 <label htmlFor="usersWithAccess">Users with access:</label>
@@ -89,9 +89,11 @@ export default function DashboardForm({ submitForm, currentUserId, dashboard = n
                         </Combobox.Option>)}
                     </Combobox.Options>
                 </Combobox>
-                <label htmlFor="public">Is dashboard public: </label>
-                <input id="public" name="public" type="checkbox" className="border p-1" />
-                <button type="submit" disabled={submited}>{submitButtonText}</button>
+                <div className="flex flex-row gap-2">
+                    <label htmlFor="public">Is dashboard public: </label>
+                    <input id="public" name="public" type="checkbox" className="border p-1" />
+                </div>
+                <button className="bg-indigo-500 text-white p-1 my-1 rounded" type="submit" disabled={submited}>{submitButtonText}</button>
             </form>
         </>
     )

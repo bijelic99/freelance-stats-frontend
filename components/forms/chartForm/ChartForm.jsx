@@ -79,7 +79,7 @@ export default function ChartForm({ submitForm, chart = newChart, submitButtonTe
 
     return (
         <>
-            <form className="flex flex-col gap-1 px-2 py-2" onSubmit={transformInput}>
+            <form className="flex flex-col gap-1 px-2 py-2 w-1/2 mx-auto" onSubmit={transformInput}>
                 <label htmlFor="name">Name: </label>
                 <input id="name" name="name" type="text" className="border p-1" defaultValue={chart.name} required />
                 <label htmlFor="dateFrom">Date from: </label>
@@ -112,7 +112,7 @@ export default function ChartForm({ submitForm, chart = newChart, submitButtonTe
                 {
                     selectedType === "model.LineChart" && <LineChartForm chartMetadata={selectedChart} chart={chart} />
                 }
-                <button type="submit" disabled={submited}>{submitButtonText}</button>
+                <button className="bg-indigo-500 text-white p-1 my-1 rounded" type="submit" disabled={submited}>{submitButtonText}</button>
             </form>
         </>
     )

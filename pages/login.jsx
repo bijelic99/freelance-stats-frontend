@@ -39,7 +39,7 @@ export default function Login() {
           <input type="text" name="username" id="username" className="border p-1" />
           <label htmlFor="password">Password:</label>
           <input type="password" name="password" id="password" className="border p-1" />
-          <button type="submit" className="border p-1" disabled={submited}>Login</button>
+          <button type="submit" className="bg-indigo-500 text-white p-1 my-1 rounded" disabled={submited}>Login</button>
         </form>
         {error && <div className='text-red-800'>{error}</div>}
         <Link href="/register">Dont have an account yet</Link>
