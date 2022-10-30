@@ -127,12 +127,8 @@ export default function Dashboard({ dashboard, chartsMetadata }) {
                 <Dialog.Panel className="w-full max-w-md overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl">
                     <Dialog.Title className="text-lg font-medium leading-6 text-gray-900">Delete dashboard</Dialog.Title>
                     <Dialog.Description>
-                        This will delete dashboard named: {cachedDashboard.name}
-                    </Dialog.Description>
-
-                    <p>
                         Are you sure you want to delete dashboard named: {cachedDashboard.name}
-                    </p>
+                    </Dialog.Description>
                     <div className="flex flex-row w-full gap-2">
                         <button onClick={deleteDashboardEvent}>Yes</button>
                         <button onClick={() => setIsDeleteDialogOpened(false)}>No</button>
